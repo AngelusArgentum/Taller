@@ -49,17 +49,19 @@ public class Persona3 {
         // 8 turnos (columnas) 
         // 5 días (filas) personas entran dando 
         //edad, DNI y nombre + día al que quiere asistir. Hasta cubrir todo o nombre "ZZZ".
-        int DF=5;
-        int DC=8;
+        int DF=3;
+        int DC=2;
         Persona3 [][] matriz=new Persona3[DF][DC];
         int DNI,edad,dia;
         int [] vectorDL=new int [DF];
         int i,j;
         String nombre; nombre="O";
+        int cant=0;
+        int maximo=DF*DC;
 
         for (i=0; i<DF; i++) vectorDL[i]=0;
         
-        while (!"ZZZ".equals(nombre)){
+        while (!"ZZZ".equals(nombre) && cant<maximo){
             System.out.println("~~~~~~~~~~~~~~~~~~~~~~~");
             System.out.print("-> Ingrese su nombre: ");
             nombre=Lector.leerString();
@@ -78,10 +80,22 @@ public class Persona3 {
                 if (vectorDL[dia-1]<DC && (matriz[dia-1][vectorDL[dia-1]]) == null){    
                         matriz[dia-1][vectorDL[dia-1]]=new Persona3(nombre,DNI,edad);
                         vectorDL[dia-1]=vectorDL[dia-1]+1;
+                        cant=cant+1;
                 }//if doble
                 else
                     System.out.println("No hay turnos disponibles para el día "+dia+".");
             }//if
-        }//while        
+        }//while
+        
+        //Informar para cada día la cantidad de inscriptos y el nombre de cada persona en cada turno.
+        
+        for (i=0; i<DF; i++){
+            j=0;
+            while (j<vectorDL[i])
+                nombre=matriz[i][j].getNombre();
+                System.out.println("En el turno "+(j + 1)+" del día" +(i+1)+ " se encuentra inscripto/a "+nombre+".");
+                j++;
+        }
+            
     }
 }
