@@ -90,11 +90,9 @@ public class Persona3 {
         //Informar para cada día la cantidad de inscriptos y el nombre de cada persona en cada turno.
         
         for (i=0; i<DF; i++){
-            j=0;
-            while (j<vectorDL[i]){
+            for (j=0; j<vectorDL[i]; j++){
                 nombre=matriz[i][j].getNombre();
                 System.out.println("En el turno "+(j + 1)+" del día " +(i+1)+ " se encuentra inscripto/a "+nombre+".");
-                j++;
             }
         }
             
