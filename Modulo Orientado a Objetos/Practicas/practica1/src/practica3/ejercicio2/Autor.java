@@ -56,7 +56,10 @@ public class Autor extends Libro{
     @Override
     public String toString() {
         String aux;
-        aux= "Nombre: "+nombre+". Biografía: "+bio+". Origen: "+origen+".";
+        aux="=================="+
+                "\nNombre: "+this.nombre+"."
+                        + "\nOrigen: "+this.origen+"."
+                        + "\nBiografía: "+this.bio+".";
         return aux;
     }
     
