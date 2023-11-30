@@ -1,0 +1,99 @@
+programa P4_E1
+procesos
+  proceso pollingForServing(E ID:numero)
+  variables
+    servirFlores:numero
+  comenzar
+    si (ID=1)
+      RecibirMensaje(servirFlores,robot1)
+      Pos(ID,2)
+      mientras (servirFlores>0)
+        depositarFlor
+        servirFlores:=servirFlores-1
+      Pos(100,100)
+      EnviarMensaje(F,robot1)
+    sino
+      si (ID=2)
+        RecibirMensaje(servirFlores,robot2)
+        Pos(ID,2)
+        mientras (servirFlores>0)
+          depositarFlor
+          servirFlores:=servirFlores-1
+        Pos(100,100)
+        EnviarMensaje(F,robot2)
+      sino
+        RecibirMensaje(servirFlores,robot3)
+        Pos(ID,2)
+        mientras (servirFlores>0)
+          depositarFlor
+          servirFlores:=servirFlores-1
+        Pos(100,100)
+        EnviarMensaje(F,robot3)
+  fin
+areas
+  serverPos:AreaP(100,100,100,100)
+  avenida1:AreaP(1,3,1,100)
+  punto1:AreaP(1,1,1,1)
+  shared1:AreaPC(1,2,1,2)
+  avenida2:AreaP(2,3,2,100)
+  punto2:AreaP(2,1,2,1)
+  shared2:AreaPC(2,2,2,2)
+  avenida3:AreaP(3,3,3,100)
+  punto3:AreaP(3,1,3,1)
+  shared3:AreaPC(3,2,3,2)
+robots
+  robot cliente
+  variables
+    pedirFlores:numero
+    AvBase:numero
+    waiting:boolean
+    flores:numero
+  comenzar
+    Random(pedirFlores,1,4)
+    AvBase:=PosAv
+    EnviarMensaje(AvBase,server)
+    EnviarMensaje(pedirFlores,server)
+    RecibirMensaje(waiting,server)
+    mover
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+    mientras (flores>0)
+      mover
+      depositarFlor
+      flores:=flores-1
+  fin
+  robot servidor
+  variables
+    currentID:numero
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+    repetir (3)
+      RecibirMensaje(currentID,*)
+      pollingForServing(currentID)
+  fin
+variables
+  robot1:cliente
+  robot2:cliente
+  robot3:cliente
+  server:servidor
+comenzar
+  AsignarArea(server,serverPos)
+  AsignarArea(server,shared1)
+  AsignarArea(server,shared2)
+  AsignarArea(server,shared3)
+  AsignarArea(robot1,avenida1)
+  AsignarArea(robot1,punto1)
+  AsignarArea(robot1,shared1)
+  AsignarArea(robot2,avenida2)
+  AsignarArea(robot2,punto2)
+  AsignarArea(robot2,shared2)
+  AsignarArea(robot3,avenida3)
+  AsignarArea(robot3,punto3)
+  AsignarArea(robot3,shared3)
+  Iniciar(server,100,100)
+  Iniciar(robot1,1,1)
+  Iniciar(robot2,2,1)
+  Iniciar(robot3,3,1)
+fin

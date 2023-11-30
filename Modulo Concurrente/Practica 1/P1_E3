@@ -1,0 +1,62 @@
+programa P1_E3
+procesos
+
+  proceso mirarArriba
+  comenzar
+    repetir (3)
+      derecha
+  fin
+  
+  proceso hacerEscalon (E size:numero)
+  variables
+    flores:numero
+  comenzar
+    flores:=0
+    repetir (size)
+      mientras (HayFlorEnLaEsquina)
+        tomarFlor
+        flores:=flores+1
+      mientras (HayFlorEnLaBolsa)
+        depositarFlor
+      mover
+    derecha
+    repetir (size)
+      mientras (HayFlorEnLaEsquina)
+        tomarFlor
+        flores:=flores+1
+      mientras (HayFlorEnLaBolsa)
+        depositarFlor
+      mover
+    mirarArriba
+    Informar(flores)
+  fin
+  
+  
+areas
+  ciudad:AreaC(1,1,100,100)
+  
+  
+robots
+  robot escalonador
+  variables
+    size:numero
+  comenzar
+    size:=1
+    repetir (4)
+      hacerEscalon(size)
+      size:=size*2
+  fin
+  
+  
+variables
+  robot1:escalonador
+  robot2:escalonador
+  robot3:escalonador
+comenzar
+  AsignarArea(robot1,ciudad)
+  AsignarArea(robot2,ciudad)
+  AsignarArea(robot3,ciudad)
+  Iniciar(robot1,14,12)
+  Iniciar(robot2,10,17)
+  Iniciar(robot3,6,22)
+fin

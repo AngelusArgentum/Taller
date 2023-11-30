@@ -1,0 +1,96 @@
+programa P4_E2
+areas
+  avenida5:AreaP(5,1,5,100)
+  avenida10:AreaP(10,1,10,100)
+  puntoC1:AreaP(11,1,11,1)
+  puntoC2:AreaP(12,1,12,1)
+  puntoPublico:AreaC(50,50,50,50)
+robots
+  robot productor
+  variables
+    AvAUX,CaAUX:numero
+    flores:numero
+  comenzar
+    flores:=0
+    mientras (PosCa<100)
+      mientras ((HayFlorEnLaEsquina) & (flores<5))
+        tomarFlor
+        flores:=flores+1
+      si (flores=5)
+        CaAUX:=PosCa
+        AvAUX:=PosAv
+        BloquearEsquina(50,50)
+        Pos(50,50)
+        mientras (HayFlorEnLaBolsa)
+          depositarFlor
+        flores:=0
+        Pos(AvAUX,CaAUX)
+        LiberarEsquina(50,50)
+      mover
+    mientras ((HayFlorEnLaEsquina) & (flores<5))
+      tomarFlor
+      flores:=flores+1
+    si (flores=5)
+      AvAUX:=PosAv
+      CaAUX:=PosCa
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      mientras (HayFlorEnLaBolsa)
+        depositarFlor
+      flores:=0
+      Pos(AvAUX,CaAUX)
+      LiberarEsquina(50,50)
+  fin
+  robot consumidor
+  variables
+    attRem:numero
+    amountF:numero
+    flores:numero
+    CaBase,AvBase:numero
+  comenzar
+    attRem:=8
+    flores:=0
+    CaBase:=PosCa
+    AvBase:=PosAv
+    mientras (attRem>0)
+      Random(amountF,2,5)
+      BloquearEsquina(50,50)
+      Pos(50,50)
+      repetir (amountF)
+        si (HayFlorEnLaEsquina)
+          tomarFlor
+          flores:=flores+1
+      si (flores=amountF)
+        Pos(AvBase,CaBase)
+        mientras (HayFlorEnLaBolsa)
+          depositarFlor
+          flores:=flores-1
+        attRem:=8
+        LiberarEsquina(50,50)
+      sino
+        mientras (HayFlorEnLaBolsa)
+          depositarFlor
+          flores:=flores-1
+        Pos(AvBase,CaBase)
+        LiberarEsquina(50,50)
+        attRem:=attRem-1
+  fin
+variables
+  consumidor1:consumidor
+  consumidor2:consumidor
+  productor1:productor
+  productor2:productor
+comenzar
+  AsignarArea(consumidor1,puntoC1)
+  AsignarArea(consumidor1,puntoPublico)
+  AsignarArea(consumidor2,puntoC2)
+  AsignarArea(consumidor2,puntoPublico)
+  AsignarArea(productor1,avenida5)
+  AsignarArea(productor1,puntoPublico)
+  AsignarArea(productor2,avenida10)
+  AsignarArea(productor2,puntoPublico)
+  Iniciar(consumidor1,11,1)
+  Iniciar(consumidor2,12,1)
+  Iniciar(productor1,5,1)
+  Iniciar(productor2,10,1)
+fin

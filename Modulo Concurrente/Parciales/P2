@@ -1,0 +1,142 @@
+programa
+procesos
+  proceso sendIDandTeam
+  comenzar
+    EnviarMensaje(1,robotA1)
+    EnviarMensaje(1,robotA1)
+    EnviarMensaje(1,robotA2)
+    EnviarMensaje(2,robotA2)
+    EnviarMensaje(2,robotB1)
+    EnviarMensaje(1,robotB1)
+    EnviarMensaje(2,robotB2)
+    EnviarMensaje(2,robotB2)
+  fin
+  proceso depositar1x1(ES flores:numero)
+  variables
+    AvAUX,CaAUX:numero
+  comenzar
+    AvAUX:=PosAv
+    CaAUX:=PosCa
+    repetir (flores)
+      BloquearEsquina(20,20)
+      Pos(20,20)
+      depositarFlor
+      Pos(AvAUX,CaAUX)
+      LiberarEsquina(20,20)
+  fin
+  
+  proceso juntarFlores (ES flores:numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      flores:=flores+1
+  fin
+  
+  proceso ladoX10 (ES flores:numero)
+  comenzar
+    repetir (10)
+      mover
+      juntarFlores(flores)
+  fin
+  proceso trailType1 (ES flores:numero)
+  comenzar
+    repetir (3)
+      derecha
+    juntarFlores(flores)
+    ladoX10 (flores)
+    repetir (3)
+      derecha
+    ladoX10 (flores)
+  fin
+  
+  proceso ladoX9 (ES flores:numero)
+  comenzar
+    repetir (9)
+      mover
+      juntarFlores(flores)
+  fin
+
+  proceso trailType2 (ES flores:numero)
+  comenzar
+    derecha
+    juntarFlores(flores)
+    ladoX9(flores)
+    repetir (3)
+      derecha
+    ladoX9(flores)
+  fin
+areas
+robots
+  robot corredor
+  variables
+    Team:numero
+    ID:numero
+    flores:numero
+    AUX:boolean
+  comenzar
+    flores:=0
+    RecibirMensaje(Team,fiscal)
+    RecibirMensaje(ID,fiscal)
+    si (ID=1)
+      trailType1(flores)
+      si (Team=1)
+        EnviarMensaje(V,robotA2)
+      sino
+        EnviarMensaje(V,robotB2)
+      EnviarMensaje(Team,fiscal)
+      EnviarMensaje(flores,fiscal)
+      depositar1x1(flores)
+    sino
+      si (Team=1)
+        RecibirMensaje(AUX,robotA1)
+        trailType2(flores)
+        EnviarMensaje(Team,fiscal)
+        EnviarMensaje(flores,fiscal)
+        depositar1x1(flores)
+      sino
+        RecibirMensaje(AUX,robotA2)
+        trailType2(flores)
+        EnviarMensaje(Team,fiscal)
+        EnviarMensaje(flores,fiscal)
+        depositar1x1(flores)
+  fin
+  
+  robot fiscalizador
+  variables
+    floresT1,floresT2:numero
+    currentTeam,currentFlores:numero
+  comenzar
+    floresT1:=0
+    floresT2:=0
+    sendIDandTeam
+    repetir (2)
+      RecibirMensaje(currentTeam,*)
+      si (currentTeam=1)
+        RecibirMensaje(currentFlores,robotA1)
+        floresT1:=floresT1+currentFlores
+      sino
+        RecibirMensaje(currentFlores,robotB1)
+        floresT2:=floresT2+currentFlores
+    repetir (2)
+      RecibirMensaje(currentTeam,*)
+      si (currentTeam=1)
+        RecibirMensaje(cirrentFlores,robotA2)
+        floresT1:=floresT1+currentFlores
+      sino
+        RecibirMensaje(currentFlores,robotB2)
+        floresT2:=floresT2+currentFlores
+        
+      si (floresT1>floresT2)
+        Informar(1)
+      sino
+        Informar(2)
+  fin
+variables
+  robotA1:corredor
+  robotA2:corredor
+  robotB1:corredor
+  robotB2:corredor
+  fiscal:fiscalizador
+comenzar
+  
+fin

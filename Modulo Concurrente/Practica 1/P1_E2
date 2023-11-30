@@ -1,0 +1,64 @@
+programa P1_E2
+procesos
+  proceso recorrerX20 (E ID:numero; ES flores:numero)
+  comenzar
+    si (ID=2)
+      derecha
+    sino
+      si (ID=3)
+        derecha
+        derecha
+      sino
+        si (ID=4)
+          derecha
+          derecha
+          derecha
+    repetir (19)
+      mientras (HayFlorEnLaEsquina)
+        tomarFlor
+        flores:=flores+1
+      mover
+  fin
+
+areas
+  ACuadradox20:AreaC(1,1,20,20)
+  Acoordinador:AreaP(21,21,21,21)
+
+robots
+  robot corredor
+  variables
+    ID:numero
+    flores:numero
+  comenzar
+    flores:=0
+    RecibirMensaje(ID,coordinador)
+    recorrerX20(ID,flores)
+    Informar(flores)
+  fin
+  
+  robot coo
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+  fin
+
+variables
+  robot1:corredor
+  robot2:corredor
+  robot3:corredor
+  robot4:corredor
+  coordinador:coo
+comenzar
+  AsignarArea(robot1,ACuadradox20)
+  AsignarArea(robot2,ACuadradox20)
+  AsignarArea(robot3,ACuadradox20)
+  AsignarArea(robot4,ACuadradox20)
+  AsignarArea(coordinador,Acoordinador)
+  Iniciar(robot1,1,1)
+  Iniciar(robot2,1,20)
+  Iniciar(robot3,20,20)
+  Iniciar(robot4,20,1)
+  Iniciar(coordinador,21,21)
+fin

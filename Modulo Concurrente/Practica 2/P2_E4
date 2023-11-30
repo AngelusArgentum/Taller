@@ -1,0 +1,166 @@
+programa P2_E4
+procesos
+  proceso sendIDs
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(25,robot1)
+    
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(1,robot2)
+    EnviarMensaje(30,robot2)
+    
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(1,robot3)
+    EnviarMensaje(35,robot3)
+    
+    EnviarMensaje(4,robot4)
+    EnviarMensaje(1,robot4)
+    EnviarMensaje(40,robot4)
+  fin
+  
+  proceso pollingForPermission (E ID:numero)
+  comenzar
+    si (ID=4)
+      EnviarMensaje(V,robot4)
+      EnviarMensaje(F,robot3)
+      EnviarMensaje(F,robot1)
+      EnviarMensaje(F,robot2)
+    sino
+      si (ID=3)
+        EnviarMensaje(V,robot3)
+        EnviarMensaje(F,robot4)
+        EnviarMensaje(F,robot2)
+        EnviarMensaje(F,robot1)
+      sino
+        si (ID=2)
+          EnviarMensaje(V,robot2)
+          EnviarMensaje(F,robot1)
+          EnviarMensaje(F,robot3)
+          EnviarMensaje(F,robot4)
+        sino
+          EnviarMensaje(V,robot1)
+          EnviarMensaje(F,robot2)
+          EnviarMensaje(F,robot3)
+          EnviarMensaje(F,robot4)
+  fin
+
+  proceso determineMax(ES maxID:numero; ES maxFP:numero; E currentID:numero; E currentF:numero ; E currentP:numero)
+  variables
+    AUX:numero
+  comenzar
+    AUX:=currentF+currentP
+    si (AUX>maxFP)
+      maxID:=currentID
+      maxFP:=AUX
+  fin
+
+  proceso keepStayingOn
+  comenzar
+    EnviarMensaje(V,robot1)
+    EnviarMensaje(V,robot2)
+    EnviarMensaje(V,robot3)
+    EnviarMensaje(V,robot4)
+  fin
+  
+  proceso goOff
+  comenzar
+    EnviarMensaje(F,robot1)
+    EnviarMensaje(F,robot1)
+    EnviarMensaje(F,robot1)
+    EnviarMensaje(F,robot1)
+  fin
+  
+areas
+  cuadrante:AreaC(25,25,75,75)
+  Afiscal:AreaP(1,1,1,1)
+  punto1:AreaP(25,1,25,1)
+  punto2:AreaP(30,1,30,1)
+  punto3:AreaP(35,1,35,1)
+  punto4:AreaP(40,1,40,1)
+
+robots
+  robot FISCALIZADOR
+  variables
+    ID:numero
+    currentF,currentP,currentID:numero
+    maxID,maxFP:numero
+    finished:boolean
+  comenzar
+    maxFP:=0
+    sendIDs
+    repetir (10)
+      Random(ID,1,4)
+      pollingForPermission(ID)
+      RecibirMensaje(currentID,*)
+      RecibirMensaje(currentF,*)
+      RecibirMensaje(currentP,*)
+      determineMax(maxID,maxF&P,currentID,currentF,currentP)
+      keepStayingOn
+    goOff
+    goOff
+    pollingForPermission(maxID)
+  fin
+  
+  robot JUNTADOR
+  variables
+    permission:boolean
+    stayOn:boolean
+    goTo5050:boolean
+    flores,papeles,ID:numero
+    Av,Ca:numero
+    AvBase,CaBase:numero
+  comenzar
+    flores:=0
+    papeles:=0
+    stayOn:=F
+    
+    RecibirMensaje(ID,fiscal)
+    RecibirMensaje(AvBase,fiscal)
+    RecibirMensaje(CaBase,fiscal)
+    
+    mientras (stayOn=V)
+      RecibirMensaje(permission,fiscal)
+      si (permission=V)
+        Random(Av,25,75)
+        Random(Ca,25,75)
+        Pos(Av,Ca)
+        mientras (HayFlorEnLaEsquina)
+          tomarFlor
+          flores:=flores+1
+        mientras (HayPapelEnLaEsquina)
+          tomarPapel
+          papeles:=papeles+1
+      Pos(AvBase,CaBase)
+      RecibirMensaje(stayOn,fiscal)
+      
+    RecibirMensaje(goTo5050,fiscal)
+    si (goTo5050=V)
+      Pos(50,50)
+  fin
+
+variables
+  robot1:JUNTADOR
+  robot2:JUNTADOR
+  robot3:JUNTADOR
+  robot4:JUNTADOR
+  fiscal:FISCALIZADOR
+comenzar
+  AsignarArea(robot1,cuadrante)
+  AsignarArea(robot2,cuadrante)
+  AsignarArea(robot3,cuadrante)
+  AsignarArea(robot4,cuadrante)
+  
+  AsignarArea(robot1,punto1)
+  AsignarArea(robot2,punto2)
+  AsignarArea(robot3,punto3)
+  AsignarArea(robot4,punto4)
+  
+  AsignarArea(fiscal,Afiscal)
+  
+  Iniciar(robot1,25,1)
+  Iniciar(robot2,30,1)
+  Iniciar(robot3,35,1)
+  Iniciar(robot4,40,1)
+  Iniciar(fiscal,1,1)
+fin

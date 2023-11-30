@@ -1,0 +1,119 @@
+programa P3_E3
+procesos
+  proceso sendIDs
+  comenzar
+    EnviarMensaje(1,robot1)
+    EnviarMensaje(2,robot2)
+    EnviarMensaje(3,robot3)
+    EnviarMensaje(4,robot4)
+  fin
+  proceso sendEsquina (E Av:numero ; E Ca:numero)
+  comenzar
+    EnviarMensaje(Av,robot1)
+    EnviarMensaje(Ca,robot1)
+    EnviarMensaje(Av,robot2)
+    EnviarMensaje(Ca,robot2)
+    EnviarMensaje(Av,robot3)
+    EnviarMensaje(Ca,robot3)
+    EnviarMensaje(Av,robot4)
+    EnviarMensaje(Ca,robot4)
+  fin
+  proceso sendAvBase
+  comenzar
+    EnviarMensaje(2,robot1)
+    EnviarMensaje(3,robot2)
+    EnviarMensaje(4,robot3)
+    EnviarMensaje(5,robot4)
+  fin
+  proceso determineMax(ES maxID:numero ; ES maxF:numero ; E currentID:numero ; E currentF:numero)
+  comenzar
+    RecibirMensaje(currentID,*)
+    si (currentID=4)
+      RecibirMensaje(currentF,robot4)
+    sino
+      si (currentID=3)
+        RecibirMensaje(currentF,robot3)
+      sino
+        si (currentID=2)
+          RecibirMensaje(currentF,robot2)
+        sino
+          RecibirMensaje(currentF,robot1)
+    si (currentF>maxF)
+      maxID:=currentID
+      maxF:=currentF
+  fin
+areas
+  cuadrante:AreaPC(2,2,10,10)
+  puntoJefe:AreaP(1,1,1,1)
+  punto1:AreaP(2,1,2,1)
+  punto2:AreaP(3,1,3,1)
+  punto3:AreaP(4,1,4,1)
+  punto4:AreaP(5,1,5,1)
+robots
+  robot jefecito
+  variables
+    Ca,Av:numero
+    maxID,maxF:numero
+    currentID,currentF:numero
+    finished:boolean
+  comenzar
+    maxF:=-1
+    Random(Av,2,10)
+    Random(Ca,2,10)
+    sendIDs
+    sendEsquina(Av,Ca)
+    sendAvBase
+    repetir (4)
+      determineMax(maxID,maxF,currentID,currentF)
+    Informar(maxID)
+    Informar(maxF)
+  fin
+  robot juntador
+  variables
+    ID,flores:numero
+    Av,Ca:numero
+    AvBase,CaBase:numero
+    finished:boolean
+  comenzar
+    RecibirMensaje(ID,jefe)
+    flores:=0
+    RecibirMensaje(Av,jefe)
+    RecibirMensaje(Ca,jefe)
+    CaBase:=1
+    RecibirMensaje(AvBase,jefe)
+    finished:=F
+    mientras (finished=F)
+      BloquearEsquina(Av,Ca)
+      Pos(Av,Ca)
+      si (HayFlorEnLaEsquina)
+        flores:=flores+1
+        tomarFlor
+      sino
+        finished:=V
+      Pos(AvBase,CaBase)
+      LiberarEsquina(Av,Ca)
+    EnviarMensaje(ID,jefe)
+    EnviarMensaje(flores,jefe)
+  fin
+variables
+  robot1:juntador
+  robot2:juntador
+  robot3:juntador
+  robot4:juntador
+  jefe:jefecito
+comenzar
+  AsignarArea(robot1,cuadrante)
+  AsignarArea(robot2,cuadrante)
+  AsignarArea(robot3,cuadrante)
+  AsignarArea(robot4,cuadrante)
+  AsignarArea(robot1,punto1)
+  AsignarArea(robot2,punto2)
+  AsignarArea(robot3,punto3)
+  AsignarArea(robot4,punto4)
+  AsignarArea(jefe,puntoJefe)
+  Iniciar(robot1,2,1)
+  Iniciar(robot2,3,1)
+  Iniciar(robot3,4,1)
+  Iniciar(robot4,5,1)
+  Iniciar(jefe,1,1)
+fin
