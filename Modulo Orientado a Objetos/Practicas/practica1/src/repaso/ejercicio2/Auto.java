@@ -1,5 +1,5 @@
 package repaso.ejercicio2;
-public class Auto extends Estacionamiento {
+public class Auto {
     private String dueño;
     private int patente;
 
@@ -28,7 +28,8 @@ public class Auto extends Estacionamiento {
     public String toString() {
         String aux;
         aux="Dueño: "+this.dueño+"."
-                + "\nPatente"+this.patente+".";
+                + "\nPatente"+this.patente+"."
+                + "\n";
         return aux;
     }
     
